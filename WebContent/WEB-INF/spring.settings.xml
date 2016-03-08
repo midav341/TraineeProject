@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+	
+	<mvc:annotation-driven />
+	<context:annotation-config/>
+	
+	<context:component-scan base-package="dao"></context:component-scan>
+	<context:component-scan base-package="controller"></context:component-scan>
+	<context:component-scan base-package="db"></context:component-scan>
+	<context:component-scan base-package="objs"></context:component-scan>
+	<context:component-scan base-package="logic"></context:component-scan>
+	
+	<!-- Datasource (MySQL) -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://www.db4free.net:3306/midav341_db" />
+		<property name="username" value="midav341" />
+		<property name="password" value="147218" />
+	</bean>
+	
+	<bean id="dAOUtil" class="util.DAOUtil"/>
+	
+	<bean id="mainPageLogic" class="logic.MainPageLogic"/>
+	<bean id="foldersAndFilesTreeJSON" class="logic.FoldersAndFilesTreeJSON"/>
+	<bean id="copyFolderOrFile" class="logic.CopyFolderOrFile"/>
+	<bean id="createFolder" class="logic.CreateFolder"/>
+	<bean id="deleteFolderOrFile" class="logic.DeleteFolderOrFile"/>
+	<bean id="moveFolderOrFile" class="logic.MoveFolderOrFile"/>
+	<bean id="renameFolderOrFile" class="logic.RenameFolderOrFile"/>
+	<bean id="uploadFile" class="logic.UploadFile"/>
+	
+	<!-- Definition for items dao -->
+	<bean id="springJdbcUserDAO" class="db.SpringJdbcUserDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="springJdbcFileDAO" class="db.SpringJdbcFileDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+		
+	<bean id="springJdbcFolderDAO" class="db.SpringJdbcFolderDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- View resolver config -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean id="localeChangeInterceptor"
+				class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+				<property name="paramName" value="lang" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="ru" />
+		<property name="cookieName" value="lang" />
+	</bean>
+	
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/i18n/messages" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	
+	<bean id="messageUtil" class="util.MessageUtil">
+		<property name="messageSource" ref="messageSource" />
+	</bean>
+	
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+</beans>

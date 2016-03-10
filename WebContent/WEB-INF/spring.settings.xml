@@ -38,6 +38,7 @@
 	<bean id="moveFolderOrFile" class="logic.MoveFolderOrFile"/>
 	<bean id="renameFolderOrFile" class="logic.RenameFolderOrFile"/>
 	<bean id="uploadFile" class="logic.UploadFile"/>
+	<bean id="emailValidation" class="util.EmailValidation"/>
 	
 	<!-- Definition for items dao -->
 	<bean id="springJdbcUserDAO" class="db.SpringJdbcUserDAO">

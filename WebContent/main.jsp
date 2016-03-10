@@ -102,6 +102,6 @@ body {
 			</tr>
 		</table>
 	</div>
-<a href="https://github.com/midav341/traineeProjects" TARGET ="_blank"><font size="2">GIT</font></a>
+<a href="https://github.com/midav341/traineeProject" TARGET ="_blank"><font size="2">GIT</font></a>
 </body>
 </html>

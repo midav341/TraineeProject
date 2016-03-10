@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.json.JsonObject;
 import javax.servlet.ServletException;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
+import util.EmailValidation;
 import util.MessageUtil;
 import util.MultiUploadUtil;
 
@@ -59,6 +61,9 @@ public class SpringController {
 
 	@Autowired
 	private MessageUtil messageUtil;
+	
+	@Autowired
+	private EmailValidation emailValidation;
 
 	public static final Logger LOG = Logger.getLogger(SpringController.class);
 
@@ -86,7 +91,7 @@ public class SpringController {
 
 		String contextPath = session.getServletContext().getRealPath("/") + "/";
 
-		if (regEmail != null) {
+		if (regEmail != null & emailValidation.emailIsValid(regEmail)) {
 			answerArray = mainPageLogic.doLogic(regEmail, regPass, contextPath);
 			success = answerArray[0];
 			session.setAttribute("email", regEmail);
@@ -99,6 +104,9 @@ public class SpringController {
 						AuthorityUtils.createAuthorityList("ROLE_USER"));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
+		}else{
+			message = "Email is not valid";
+			modelMap.addAttribute("answerText", message);
 		}
 
 		return forwardPageName;
@@ -245,10 +253,18 @@ public class SpringController {
 			@RequestParam(value = "filesParentPathList", required = false) String[] filesParentPathList,
 			@RequestParam(value = "folderParentPathList", required = false) String[] folderParentPathList,
 			@RequestParam(value = "folderNameList", required = false) String[] folderNameList) {
+		
+		System.out.println("filesParentPathList ="+Arrays.toString(filesParentPathList));
+		System.out.println("folderParentPathList ="+Arrays.toString(folderParentPathList));
+		System.out.println("folderNameList ="+Arrays.toString(folderNameList));
 
 		filesParentPathList = MultiUploadUtil.filesParentPathList(filesParentPathList);
 		folderNameList = MultiUploadUtil.folderNameList(folderNameList);
 		folderParentPathList = MultiUploadUtil.folderParentPathList(folderParentPathList);
+		
+		System.out.println("filesParentPathList ="+Arrays.toString(filesParentPathList));
+		System.out.println("folderParentPathList ="+Arrays.toString(folderParentPathList));
+		System.out.println("folderNameList ="+Arrays.toString(folderNameList));
 
 		String contextPath = session.getServletContext().getRealPath("/") + "/";
 		try {
